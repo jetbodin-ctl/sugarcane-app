@@ -13,36 +13,252 @@
     body { font-family: 'Kanit', sans-serif; background-color: #0f172a; color: #f8fafc; }
     .bg-cane {
       background: linear-gradient(rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.95)), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1000&auto=format&fit=crop');
-      background-size: cover; background-position: center;
+      background-size: cover; background-position: center; background-attachment: fixed;
     }
-    #map { height: 280px; width: 100%; border-radius: 1rem; z-index: 1; }
+    #map { height: 260px; width: 100%; border-radius: 1rem; z-index: 1; }
   </style>
 </head>
-<body class="bg-slate-950 min-h-screen flex flex-col justify-between">
+<body class="bg-slate-950 min-h-screen">
 
-  <!-- ==================== SECTION 1: LOGIN / REGISTER PAGE ==================== -->
-  <div id="page-auth" class="bg-cane min-h-screen flex items-center justify-center p-4">
-    <div class="w-full max-w-md bg-slate-900/90 backdrop-blur-md rounded-3xl border border-slate-700 shadow-2xl p-6 sm:p-8 space-y-6 relative overflow-hidden">
+  <!-- ==================== SECTION 1: AUTHENTICATION PAGE ==================== -->
+  <div id="page-auth" class="bg-cane min-h-screen flex items-center justify-center p-4 py-8">
+    <div class="w-full max-w-md bg-slate-900/95 backdrop-blur-md rounded-3xl border border-slate-700 shadow-2xl p-6 sm:p-8 space-y-6">
       
-      <!-- Header -->
+      <!-- Logo Header -->
       <div class="text-center space-y-2">
-        <div class="w-16 h-16 bg-emerald-500/20 border-2 border-emerald-400 rounded-2xl flex items-center justify-center mx-auto text-3xl shadow-lg shadow-emerald-500/10">
-          🌱
-        </div>
+        <div class="w-16 h-16 bg-emerald-500/20 border-2 border-emerald-400 rounded-2xl flex items-center justify-center mx-auto text-3xl shadow-lg shadow-emerald-500/10">🌱</div>
         <h1 class="text-2xl font-bold text-white tracking-wide">CaneSmart AI</h1>
         <p class="text-xs text-slate-400">ระบบบริหารจัดการแปลงอ้อยอัจฉริยะ</p>
       </div>
 
-      <!-- Tab Switcher -->
-      <div class="bg-slate-800/80 p-1 rounded-xl flex text-xs font-semibold border border-slate-700">
-        <button type="button" id="btn-login-tab" onclick="switchTab('login')" class="flex-1 py-2 rounded-lg bg-emerald-600 text-white transition-all cursor-pointer">เข้าสู่ระบบ</button>
-        <button type="button" id="btn-register-tab" onclick="switchTab('register')" class="flex-1 py-2 rounded-lg text-slate-400 hover:text-white transition-all cursor-pointer">ลงทะเบียนชาวไร่</button>
+      <!-- Mode Selector -->
+      <div class="grid grid-cols-2 gap-2 bg-slate-800 p-1.5 rounded-xl border border-slate-700 text-xs font-medium">
+        <button type="button" id="btn-tab-login" onclick="setAuthMode('login')" class="py-2.5 rounded-lg bg-emerald-600 text-white font-semibold transition-all cursor-pointer">เข้าสู่ระบบ</button>
+        <button type="button" id="btn-tab-register" onclick="setAuthMode('register')" class="py-2.5 rounded-lg text-slate-400 hover:text-white transition-all cursor-pointer">ลงทะเบียนชาวไร่</button>
       </div>
 
-      <!-- FORM 1: LOGIN -->
-      <form id="form-login" onsubmit="handleAuth(event, 'login')" class="space-y-4">
+      <!-- LOGIN FORM -->
+      <form id="sec-login" onsubmit="doAuth(event, 'login')" class="space-y-4">
         <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">เลขโควตา / เบอร์โทรศัพท์</label>
+          <label class="block text-xs font-medium text-slate-300 mb-1">เลขโควตาชาวไร่ / เบอร์โทรศัพท์</label>
           <div class="relative">
-            <i class="fa-solid fa-id-card absolute left-3.5 top-3 text-slate-400 text-sm"></i>
-            <input type="text" id="login-id" required placeholder
+            <i class="fa-solid fa-id-card absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
+            <input type="text" id="login-quota" required placeholder="เช่น 950123 หรือ 0812345678" class="w-full bg-slate-800/90 border border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-emerald-500">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">รหัสผ่าน</label>
+          <div class="relative">
+            <i class="fa-solid fa-lock absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
+            <input type="password" required placeholder="••••••••" class="w-full bg-slate-800/90 border border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-emerald-500">
+          </div>
+        </div>
+        <div class="flex items-center justify-between text-xs">
+          <label class="flex items-center space-x-2 text-slate-400 cursor-pointer">
+            <input type="checkbox" checked class="rounded bg-slate-800 border-slate-700 text-emerald-500">
+            <span>จำฉันไว้ในระบบ</span>
+          </label>
+          <a href="#" onclick="alert('กรุณาติดต่อเจ้าหน้าที่นักส่งเสริมประจำโรงงาน')" class="text-emerald-400 hover:underline">ลืมรหัสผ่าน?</a>
+        </div>
+        <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-emerald-900/40 transition-all cursor-pointer">
+          เข้าสู่ระบบ <i class="fa-solid fa-arrow-right ml-1"></i>
+        </button>
+      </form>
+
+      <!-- REGISTER FORM -->
+      <form id="sec-register" onsubmit="doAuth(event, 'register')" class="space-y-3.5 hidden">
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">ประเภทผู้ใช้งาน</label>
+          <select class="w-full bg-slate-800/90 border border-slate-700 rounded-xl py-2.5 px-3 text-sm text-white focus:outline-none focus:border-emerald-500">
+            <option value="farmer">🌾 ชาวไร่อ้อย / เกษตรกร</option>
+            <option value="promoter">👨‍🌾 นักส่งเสริมประจำโรงงาน</option>
+            <option value="admin">🏢 เจ้าหน้าที่โรงงาน / ผู้บริหาร</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">ชื่อ - นามสกุล</label>
+          <input type="text" id="reg-farmer-name" required placeholder="นายสมศักดิ์ รักเกษตร" class="w-full bg-slate-800/90 border border-slate-700 rounded-xl py-2.5 px-3 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">เลขโควตา</label>
+            <input type="text" required placeholder="950123" class="w-full bg-slate-800/90 border border-slate-700 rounded-xl py-2.5 px-3 text-sm text-white focus:outline-none focus:border-emerald-500">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">เบอร์โทรศัพท์</label>
+            <input type="tel" required placeholder="0812345678" class="w-full bg-slate-800/90 border border-slate-700 rounded-xl py-2.5 px-3 text-sm text-white focus:outline-none focus:border-emerald-500">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">สร้างรหัสผ่าน</label>
+          <input type="password" required placeholder="อย่างน้อย 6 หลัก" class="w-full bg-slate-800/90 border border-slate-700 rounded-xl py-2.5 px-3 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg transition-all cursor-pointer mt-1">
+          ยืนยันลงทะเบียนเข้าใช้งาน
+        </button>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ==================== SECTION 2: MAIN DASHBOARD ==================== -->
+  <div id="page-app" class="hidden min-h-screen flex flex-col pb-20">
+    <header class="bg-slate-900/95 border-b border-slate-800 sticky top-0 z-50 px-4 py-3 flex justify-between items-center backdrop-blur-md">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 bg-emerald-500/20 border border-emerald-500/40 rounded-xl flex items-center justify-center text-xl">🌱</div>
+        <div>
+          <h2 id="display-user" class="text-sm font-bold text-white">คุณเกษตรกร (โควตา 950123)</h2>
+          <p class="text-[11px] text-emerald-400">ไร่อ้อยสมบูรณ์ (3 แปลง • 85 ไร่)</p>
+        </div>
+      </div>
+      <button onclick="doLogout()" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 px-3 py-1.5 rounded-lg transition-colors cursor-pointer">
+        <i class="fa-solid fa-right-from-bracket mr-1"></i> ออก
+      </button>
+    </header>
+
+    <main class="p-4 space-y-4 max-w-2xl mx-auto w-full flex-1">
+      <!-- Weather -->
+      <div class="bg-gradient-to-r from-blue-900/40 to-indigo-900/40 border border-blue-500/30 rounded-2xl p-4 flex justify-between items-center">
+        <div class="space-y-1">
+          <div class="flex items-center space-x-2">
+            <span class="text-2xl">🌤️</span>
+            <span class="text-2xl font-bold">32°C</span>
+            <span class="text-xs bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full border border-blue-400/30">ฝนตก 40%</span>
+          </div>
+          <p class="text-xs text-slate-300">ความชื้นเหมาะสม คาดการณ์ฝนตกในอีก 2 วันข้างหน้า</p>
+        </div>
+        <button onclick="alert('ระบบบันทึกเรียบร้อย')" class="text-xs bg-blue-600 hover:bg-blue-500 text-white font-medium px-3 py-2 rounded-xl shadow-md cursor-pointer">
+          ห้ามใส่ปุ๋ยเคมี
+        </button>
+      </div>
+
+      <!-- Map -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+        <div class="flex justify-between items-center">
+          <h3 class="text-sm font-semibold flex items-center text-emerald-400">
+            <i class="fa-solid fa-map-location-dot mr-2"></i> แผนที่แปลงอ้อย & KML
+          </h3>
+          <label class="text-xs bg-emerald-600/20 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-600/40 px-2.5 py-1 rounded-lg cursor-pointer transition-all">
+            <i class="fa-solid fa-file-import mr-1"></i> นำเข้า KML
+            <input type="file" accept=".kml,.geojson" class="hidden" onchange="alert('อัปโหลดไฟล์ KML สำเร็จ!')">
+          </label>
+        </div>
+        <div id="map"></div>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div class="bg-slate-800 p-2 rounded-xl flex items-center justify-between border border-slate-700">
+            <span class="text-slate-400">แปลงที่ 1 (อ้อยข้ามแล้ง)</span>
+            <span class="text-emerald-400 font-semibold">NDVI 0.82</span>
+          </div>
+          <div class="bg-slate-800 p-2 rounded-xl flex items-center justify-between border border-slate-700">
+            <span class="text-slate-400">แปลงที่ 2 (อ้อยตอ 1)</span>
+            <span class="text-amber-400 font-semibold">NDVI 0.65</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Advisor -->
+      <div class="bg-gradient-to-br from-emerald-950/60 to-slate-900 border border-emerald-500/30 rounded-2xl p-4 space-y-3">
+        <div class="flex items-center space-x-2 text-emerald-400 text-sm font-semibold">
+          <i class="fa-solid fa-robot"></i>
+          <span>คำแนะนำ AI ประจำวัน</span>
+        </div>
+        <p class="text-xs text-slate-300 leading-relaxed">
+          "ชุดดินร่วนปนทรายเหมาะกับ <b class="text-amber-300">พันธุ์ขอนแก่น 3</b> ช่วงอ้อยย่างเข้าสู่ช่วงสะสมน้ำตาล แนะนำใส่ปุ๋ยสูตร 15-5-20 อัตรา 50 กก./ไร่"
+        </p>
+        <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 space-y-2">
+          <div class="text-xs font-medium text-slate-300">คำนวณปุ๋ยตามขนาดไร่</div>
+          <div class="flex gap-2">
+            <input type="number" id="calc-rai" value="25" placeholder="จำนวนไร่" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white">
+            <button onclick="calcFertilizer()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-4 py-1.5 rounded-lg whitespace-nowrap cursor-pointer">
+              คำนวณ
+            </button>
+          </div>
+          <div id="calc-res" class="text-xs text-emerald-300 font-semibold hidden"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Bottom Nav -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-slate-900/95 border-t border-slate-800 px-6 py-2 flex justify-around items-center z-50 backdrop-blur-md">
+      <button class="flex flex-col items-center text-emerald-400 cursor-pointer">
+        <i class="fa-solid fa-house text-lg"></i>
+        <span class="text-[10px] mt-0.5">หน้าแรก</span>
+      </button>
+      <button onclick="alert('ระบบคิวส่งอ้อยเข้าโรงงาน')" class="flex flex-col items-center text-slate-400 hover:text-white cursor-pointer">
+        <i class="fa-solid fa-truck-ramp-box text-lg"></i>
+        <span class="text-[10px] mt-0.5">คิวส่งอ้อย</span>
+      </button>
+      <button onclick="alert('เปิดกล้องถ่ายภาพใบอ้อย')" class="flex flex-col items-center text-slate-400 hover:text-white cursor-pointer">
+        <div class="w-10 h-10 bg-emerald-600 rounded-full flex items-center justify-center text-white shadow-lg -mt-5 border-2 border-slate-950">
+          <i class="fa-solid fa-camera text-base"></i>
+        </div>
+        <span class="text-[10px] mt-0.5">สแกนโรค</span>
+      </button>
+      <button onclick="alert('รายงานบัญชีรายรับ-จ่าย')" class="flex flex-col items-center text-slate-400 hover:text-white cursor-pointer">
+        <i class="fa-solid fa-wallet text-lg"></i>
+        <span class="text-[10px] mt-0.5">บัญชีไร่</span>
+      </button>
+      <button onclick="alert('การตั้งค่าบัญชี')" class="flex flex-col items-center text-slate-400 hover:text-white cursor-pointer">
+        <i class="fa-solid fa-gear text-lg"></i>
+        <span class="text-[10px] mt-0.5">ตั้งค่า</span>
+      </button>
+    </nav>
+  </div>
+
+  <script>
+    let mapInstance = null;
+
+    function setAuthMode(mode) {
+      const loginSec = document.getElementById('sec-login');
+      const regSec = document.getElementById('sec-register');
+      const btnLogin = document.getElementById('btn-tab-login');
+      const btnReg = document.getElementById('btn-tab-register');
+
+      if (mode === 'login') {
+        loginSec.classList.remove('hidden');
+        regSec.classList.add('hidden');
+        btnLogin.className = "py-2.5 rounded-lg bg-emerald-600 text-white font-semibold transition-all cursor-pointer";
+        btnReg.className = "py-2.5 rounded-lg text-slate-400 hover:text-white transition-all cursor-pointer";
+      } else {
+        loginSec.classList.add('hidden');
+        regSec.classList.remove('hidden');
+        btnReg.className = "py-2.5 rounded-lg bg-emerald-600 text-white font-semibold transition-all cursor-pointer";
+        btnLogin.className = "py-2.5 rounded-lg text-slate-400 hover:text-white transition-all cursor-pointer";
+      }
+    }
+
+    function doAuth(e, type) {
+      e.preventDefault();
+      const quota = document.getElementById('login-quota').value || '950123';
+      const name = document.getElementById('reg-farmer-name').value || 'สมศักดิ์';
+      
+      document.getElementById('display-user').innerText = type === 'login' ? `คุณเกษตรกร (โควตา ${quota})` : `คุณ${name}`;
+      
+      document.getElementById('page-auth').classList.add('hidden');
+      document.getElementById('page-app').classList.remove('hidden');
+
+      setTimeout(() => {
+        if (!mapInstance) {
+          mapInstance = L.map('map').setView([15.243, 99.882], 13);
+          L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+            maxZoom: 20, subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+          }).addTo(mapInstance);
+          L.marker([15.243, 99.882]).addTo(mapInstance).bindPopup("<b>แปลงอ้อยที่ 1</b><br>25 ไร่").openPopup();
+        }
+      }, 200);
+    }
+
+    function doLogout() {
+      document.getElementById('page-app').classList.add('hidden');
+      document.getElementById('page-auth').classList.remove('hidden');
+    }
+
+    function calcFertilizer() {
+      const rai = document.getElementById('calc-rai').value || 0;
+      const res = document.getElementById('calc-res');
+      res.innerText = `ต้องการปุ๋ย 15-5-20 รวม: ${Math.ceil(rai * 1)} กระสอบ (${(Math.ceil(rai * 1) * 50).toLocaleString()} กก.)`;
+      res.classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
