@@ -3,152 +3,180 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CaneSmart AI - เข้าสู่ระบบ</title>
+  <title>CaneSmart AI - ระบบบริหารจัดการแปลงอ้อยอัจฉริยะ</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap');
-    body { font-family: 'Kanit', sans-serif; background-color: #0f172a; }
+    body { font-family: 'Kanit', sans-serif; background-color: #0f172a; color: #f8fafc; }
     .bg-cane {
-      background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.95)), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1000&auto=format&fit=crop');
-      background-size: cover;
-      background-position: center;
+      background: linear-gradient(rgba(15, 23, 42, 0.88), rgba(15, 23, 42, 0.95)), url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=1000&auto=format&fit=crop');
+      background-size: cover; background-position: center;
     }
+    #map { height: 280px; width: 100%; border-radius: 1rem; z-index: 1; }
   </style>
 </head>
-<body class="bg-cane min-h-screen flex items-center justify-center p-4">
+<body class="bg-slate-950 min-h-screen flex flex-col justify-between">
 
-  <!-- Main Container -->
-  <div class="w-full max-w-md bg-slate-900/90 backdrop-blur-md rounded-3xl border border-slate-700 shadow-2xl p-6 sm:p-8 space-y-6 text-white relative overflow-hidden">
-    
-    <!-- Logo & Header -->
-    <div class="text-center space-y-2">
-      <div class="w-16 h-16 bg-emerald-500/20 border-2 border-emerald-400 rounded-2xl flex items-center justify-center mx-auto text-3xl shadow-lg shadow-emerald-500/10">
-        🌱
-      </div>
-      <h1 class="text-2xl font-bold text-white tracking-wide">CaneSmart AI</h1>
-      <p class="text-xs text-slate-400">ระบบบริหารจัดการแปลงอ้อยอัจฉริยะ</p>
-    </div>
-
-    <!-- Tab Switcher (Login / Register) -->
-    <div class="bg-slate-800/80 p-1 rounded-xl flex text-xs font-semibold border border-slate-700">
-      <button id="btn-login-tab" onclick="switchTab('login')" class="flex-1 py-2 rounded-lg bg-emerald-600 text-white transition-all duration-200">
-        เข้าสู่ระบบ
-      </button>
-      <button id="btn-register-tab" onclick="switchTab('register')" class="flex-1 py-2 rounded-lg text-slate-400 hover:text-white transition-all duration-200">
-        ลงทะเบียนชาวไร่
-      </button>
-    </div>
-
-    <!-- FORM 1: LOGIN -->
-    <form id="form-login" onsubmit="handleLogin(event)" class="space-y-4">
-      <div>
-        <label class="block text-xs font-medium text-slate-300 mb-1">เลขโควตา / เบอร์โทรศัพท์</label>
-        <div class="relative">
-          <i class="fa-solid fa-id-card absolute left-3.5 top-3 text-slate-400 text-sm"></i>
-          <input type="text" required placeholder="เช่น 950123 หรือ 0812345678" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition-colors">
+  <!-- ==================== SECTION 1: LOGIN / REGISTER PAGE ==================== -->
+  <div id="page-auth" class="bg-cane min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-slate-900/90 backdrop-blur-md rounded-3xl border border-slate-700 shadow-2xl p-6 sm:p-8 space-y-6 relative overflow-hidden">
+      
+      <!-- Header -->
+      <div class="text-center space-y-2">
+        <div class="w-16 h-16 bg-emerald-500/20 border-2 border-emerald-400 rounded-2xl flex items-center justify-center mx-auto text-3xl shadow-lg shadow-emerald-500/10">
+          🌱
         </div>
+        <h1 class="text-2xl font-bold text-white tracking-wide">CaneSmart AI</h1>
+        <p class="text-xs text-slate-400">ระบบบริหารจัดการแปลงอ้อยอัจฉริยะ</p>
       </div>
 
-      <div>
-        <label class="block text-xs font-medium text-slate-300 mb-1">รหัสผ่าน</label>
-        <div class="relative">
-          <i class="fa-solid fa-lock absolute left-3.5 top-3 text-slate-400 text-sm"></i>
-          <input type="password" required placeholder="••••••••" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition-colors">
-        </div>
+      <!-- Tab Switcher -->
+      <div class="bg-slate-800/80 p-1 rounded-xl flex text-xs font-semibold border border-slate-700">
+        <button id="btn-login-tab" onclick="switchTab('login')" class="flex-1 py-2 rounded-lg bg-emerald-600 text-white transition-all">เข้าสู่ระบบ</button>
+        <button id="btn-register-tab" onclick="switchTab('register')" class="flex-1 py-2 rounded-lg text-slate-400 hover:text-white transition-all">ลงทะเบียนชาวไร่</button>
       </div>
 
-      <div class="flex justify-between items-center text-xs">
-        <label class="flex items-center space-x-2 text-slate-400 cursor-pointer">
-          <input type="checkbox" class="rounded bg-slate-800 border-slate-700 text-emerald-500 focus:ring-0">
-          <span>จำฉันไว้ในระบบ</span>
-        </label>
-        <a href="#" onclick="alert('กรุณาติดต่อเจ้าหน้าที่นักส่งเสริมประจำโรงงานเพื่อรีเซ็ตรหัสผ่าน')" class="text-emerald-400 hover:underline">ลืมรหัสผ่าน?</a>
-      </div>
-
-      <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-emerald-900/40 transition-all active:scale-[0.98]">
-        เข้าสู่ระบบ <i class="fa-solid fa-arrow-right ml-1"></i>
-      </button>
-    </form>
-
-    <!-- FORM 2: REGISTER -->
-    <form id="form-register" onsubmit="handleRegister(event)" class="space-y-3 hidden">
-      <div>
-        <label class="block text-xs font-medium text-slate-300 mb-1">ประเภทผู้ใช้งาน</label>
-        <select class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-3 text-sm text-white focus:outline-none focus:border-emerald-500">
-          <option value="farmer">🌾 ชาวไร่อ้อย / เกษตรกร</option>
-          <option value="promoter">👨‍🌾 นักส่งเสริมประจำโรงงาน</option>
-          <option value="admin">🏢 เจ้าหน้าที่โรงงาน / ผู้บริหาร</option>
-        </select>
-      </div>
-
-      <div>
-        <label class="block text-xs font-medium text-slate-300 mb-1">ชื่อ - นามสกุล</label>
-        <input type="text" required placeholder="นายสมศักดิ์ รักเกษตร" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2 px-3 text-sm text-white focus:outline-none focus:border-emerald-500">
-      </div>
-
-      <div class="grid grid-cols-2 gap-2">
+      <!-- FORM 1: LOGIN -->
+      <form id="form-login" onsubmit="handleAuth(event, 'login')" class="space-y-4">
         <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">เลขโควตาชาวไร่</label>
-          <input type="text" required placeholder="950123" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2 px-3 text-sm text-white focus:outline-none focus:border-emerald-500">
+          <label class="block text-xs font-medium text-slate-300 mb-1">เลขโควตา / เบอร์โทรศัพท์</label>
+          <div class="relative">
+            <i class="fa-solid fa-id-card absolute left-3.5 top-3 text-slate-400 text-sm"></i>
+            <input type="text" id="login-id" required placeholder="เช่น 950123 หรือ 0812345678" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-emerald-500">
+          </div>
         </div>
         <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">เบอร์โทรศัพท์</label>
-          <input type="tel" required placeholder="0812345678" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2 px-3 text-sm text-white focus:outline-none focus:border-emerald-500">
+          <label class="block text-xs font-medium text-slate-300 mb-1">รหัสผ่าน</label>
+          <div class="relative">
+            <i class="fa-solid fa-lock absolute left-3.5 top-3 text-slate-400 text-sm"></i>
+            <input type="password" required placeholder="••••••••" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 pl-10 pr-4 text-sm text-white focus:outline-none focus:border-emerald-500">
+          </div>
         </div>
-      </div>
+        <div class="flex justify-between items-center text-xs">
+          <label class="flex items-center space-x-2 text-slate-400 cursor-pointer">
+            <input type="checkbox" checked class="rounded bg-slate-800 border-slate-700 text-emerald-500 focus:ring-0">
+            <span>จำฉันไว้ในระบบ</span>
+          </label>
+          <a href="#" onclick="alert('กรุณาติดต่อเจ้าหน้าที่นักส่งเสริมประจำโรงงานเพื่อรีเซ็ตรหัสผ่าน')" class="text-emerald-400 hover:underline">ลืมรหัสผ่าน?</a>
+        </div>
+        <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg shadow-emerald-900/40 transition-all">
+          เข้าสู่ระบบ <i class="fa-solid fa-arrow-right ml-1"></i>
+        </button>
+      </form>
 
-      <div>
-        <label class="block text-xs font-medium text-slate-300 mb-1">รหัสผ่านสำหรับเข้าใช้งาน</label>
-        <input type="password" required placeholder="อย่างน้อย 6 หลัก" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2 px-3 text-sm text-white focus:outline-none focus:border-emerald-500">
-      </div>
-
-      <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg transition-all active:scale-[0.98] mt-2">
-        ยืนยันการลงทะเบียน
-      </button>
-    </form>
-
-    <!-- Footer Info -->
-    <div class="text-center text-[11px] text-slate-500 pt-2 border-t border-slate-800">
-      สนับสนุนเทคโนโลยีการเกษตรแม่นยำ (Smart Farming)
+      <!-- FORM 2: REGISTER -->
+      <form id="form-register" onsubmit="handleAuth(event, 'register')" class="space-y-3 hidden">
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">ประเภทผู้ใช้งาน</label>
+          <select id="reg-role" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2.5 px-3 text-sm text-white focus:outline-none focus:border-emerald-500">
+            <option value="farmer">🌾 ชาวไร่อ้อย / เกษตรกร</option>
+            <option value="promoter">👨‍🌾 นักส่งเสริมประจำโรงงาน</option>
+            <option value="admin">🏢 เจ้าหน้าที่โรงงาน / ผู้บริหาร</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">ชื่อ - นามสกุล</label>
+          <input type="text" id="reg-name" required placeholder="นายสมศักดิ์ รักเกษตร" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2 px-3 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">เลขโควตาชาวไร่</label>
+            <input type="text" required placeholder="950123" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2 px-3 text-sm text-white focus:outline-none focus:border-emerald-500">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">เบอร์โทรศัพท์</label>
+            <input type="tel" required placeholder="0812345678" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2 px-3 text-sm text-white focus:outline-none focus:border-emerald-500">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">รหัสผ่าน</label>
+          <input type="password" required placeholder="อย่างน้อย 6 หลัก" class="w-full bg-slate-800 border border-slate-700 rounded-xl py-2 px-3 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg transition-all mt-2">
+          ยืนยันการลงทะเบียน
+        </button>
+      </form>
     </div>
-
   </div>
 
-  <script>
-    // สลับแท็บ Login / Register
-    function switchTab(tab) {
-      const loginForm = document.getElementById('form-login');
-      const regForm = document.getElementById('form-register');
-      const loginBtn = document.getElementById('btn-login-tab');
-      const regBtn = document.getElementById('btn-register-tab');
+  <!-- ==================== SECTION 2: MAIN DASHBOARD ==================== -->
+  <div id="page-app" class="hidden min-h-screen flex flex-col pb-20">
+    
+    <!-- Top Navigation Bar -->
+    <header class="bg-slate-900/90 border-b border-slate-800 backdrop-blur-md sticky top-0 z-50 px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 bg-emerald-500/20 border border-emerald-500/40 rounded-xl flex items-center justify-center text-xl">🌱</div>
+        <div>
+          <h2 id="user-display-name" class="text-sm font-bold text-white">คุณสมศักดิ์ (โควตา 950123)</h2>
+          <p id="user-display-role" class="text-[11px] text-emerald-400">ไร่อ้อยสมบูรณ์ (3 แปลง • 85 ไร่)</p>
+        </div>
+      </div>
+      <button onclick="handleLogout()" class="text-xs bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 px-3 py-1.5 rounded-lg transition-colors">
+        <i class="fa-solid fa-right-from-bracket mr-1"></i> ออก
+      </button>
+    </header>
 
-      if(tab === 'login') {
-        loginForm.classList.remove('hidden');
-        regForm.classList.add('hidden');
-        loginBtn.className = "flex-1 py-2 rounded-lg bg-emerald-600 text-white transition-all duration-200";
-        regBtn.className = "flex-1 py-2 rounded-lg text-slate-400 hover:text-white transition-all duration-200";
-      } else {
-        loginForm.classList.add('hidden');
-        regForm.classList.remove('hidden');
-        regBtn.className = "flex-1 py-2 rounded-lg bg-emerald-600 text-white transition-all duration-200";
-        loginBtn.className = "flex-1 py-2 rounded-lg text-slate-400 hover:text-white transition-all duration-200";
-      }
-    }
+    <!-- Main Content Body -->
+    <main class="p-4 space-y-4 max-w-2xl mx-auto w-full">
+      
+      <!-- Weather Card -->
+      <div class="bg-gradient-to-r from-blue-900/40 to-indigo-900/40 border border-blue-500/30 rounded-2xl p-4 flex justify-between items-center">
+        <div class="space-y-1">
+          <div class="flex items-center space-x-2">
+            <span class="text-2xl">🌤️</span>
+            <span class="text-2xl font-bold">32°C</span>
+            <span class="text-xs bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full border border-blue-400/30">ฝนตก 40%</span>
+          </div>
+          <p class="text-xs text-slate-300">ความชื้นเหมาะสม คาดการณ์ฝนตกในอีก 2 วันข้างหน้า</p>
+        </div>
+        <button onclick="alert('ระบบบันทึกตารางการให้น้ำเรียบร้อยแล้ว')" class="text-xs bg-blue-600 hover:bg-blue-500 text-white font-medium px-3 py-2 rounded-xl shadow-md">
+          ห้ามใส่ปุ๋ยเคมี
+        </button>
+      </div>
 
-    // จำลองการเข้าสู่ระบบ
-    function handleLogin(e) {
-      e.preventDefault();
-      alert('เข้าสู่ระบบสำเร็จ! กำลังพาท่านไปยังหน้าจัดการแปลงอ้อย...');
-      // ในขั้นตอนถัดไปจะย้ายไปหน้า Dashboard หลัก
-    }
+      <!-- Map & Plot Manager -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+        <div class="flex justify-between items-center">
+          <h3 class="text-sm font-semibold flex items-center text-emerald-400">
+            <i class="fa-solid fa-map-location-dot mr-2"></i> แผนที่แปลงอ้อย & KML
+          </h3>
+          <label class="text-xs bg-emerald-600/20 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-600/40 px-2.5 py-1 rounded-lg cursor-pointer transition-all">
+            <i class="fa-solid fa-file-import mr-1"></i> นำเข้า KML
+            <input type="file" accept=".kml,.geojson" class="hidden" onchange="alert('อัปโหลดไฟล์ KML แปลงอ้อยสำเร็จ! กำลังประมวลผลพิกัด...')">
+          </label>
+        </div>
+        
+        <!-- GIS Map Container -->
+        <div id="map"></div>
 
-    // จำลองการลงทะเบียน
-    function handleRegister(e) {
-      e.preventDefault();
-      alert('ลงทะเบียนสำเร็จ! กรุณาเข้าสู่ระบบด้วยเลขโควตาและรหัสผ่านของคุณ');
-      switchTab('login');
-    }
-  </script>
-</body>
-</html>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div class="bg-slate-800 p-2 rounded-xl flex items-center justify-between border border-slate-700">
+            <span class="text-slate-400">แปลงที่ 1 (อ้อยข้ามแล้ง)</span>
+            <span class="text-emerald-400 font-semibold">NDVI 0.82</span>
+          </div>
+          <div class="bg-slate-800 p-2 rounded-xl flex items-center justify-between border border-slate-700">
+            <span class="text-slate-400">แปลงที่ 2 (อ้อยตอ 1)</span>
+            <span class="text-amber-400 font-semibold">NDVI 0.65</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Sugarcane Advisor -->
+      <div class="bg-gradient-to-br from-emerald-950/60 to-slate-900 border border-emerald-500/30 rounded-2xl p-4 space-y-3">
+        <div class="flex items-center space-x-2 text-emerald-400 text-sm font-semibold">
+          <i class="fa-solid fa-robot"></i>
+          <span>คำแนะนำ AI ประจำวัน</span>
+        </div>
+        <p class="text-xs text-slate-300 leading-relaxed">
+          "ชุดดินร่วนปนทรายเหมาะกับ <b class="text-amber-300">พันธุ์ขอนแก่น 3</b> ช่วงอ้อยย่างเข้าสู่ช่วงสะสมน้ำตาล แนะนำใส่ปุ๋ยสูตร 15-5-20 อัตรา 50 กก./ไร่"
+        </p>
+        
+        <!-- Calculator Tool -->
+        <div class="bg-slate-900/80 p-3 rounded-xl border border-slate-800 space-y-2">
+          <div class="text-xs font-medium text-slate-300">คำนวณปุ๋ยตามขนาดไร่</div>
+          <div class="flex gap-2">
+            <input type="number" id="calc-rai" value="25" placeholder="จำนวนไร่" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white">
+            <button onclick="calculateFertilizer()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-4 py-1.5 rounded-lg whitespace-nowrap
